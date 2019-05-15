@@ -15,12 +15,12 @@
         .state('login', {
           url : '/login',
           templateUrl : 'views/login.html',
-          controller : 'src/scripts/controllers/loginController.js'
+          controller : 'scripts/controllers/loginController.js'
         })
         .state('home', {
           url : '/home',
           templateUrl : 'views/home.html',
-          controller : 'src/scripts/controllers/homeController.js'
+          controller : 'scripts/controllers/homeController.js'
         });
         
          $urlRouterProvider.otherwise('/login');
