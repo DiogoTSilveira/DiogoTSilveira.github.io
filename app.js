@@ -1,27 +1,91 @@
-(function() {
-    angular.module('myApp', ['ui.router'])
-    
-    .run(function($rootScope, $location, $state, LoginService) {
-       console.clear();
-       console.log('running');
-      if(!LoginService.isAuthenticated()) {
-          $state.transitionTo('login');
+var app = angular.module('myApp', ['ngRoute', 'ngCookies']);
+
+app.config(function ($routeProvider) {
+
+  $routeProvider
+
+    .when('/', {
+
+      templateUrl: 'views/mainpage.html'
+
+    })
+
+    .when('/login', {
+
+      templateUrl: 'views/login.html'
+
+    })
+
+    .when('/register', {
+
+      templateUrl: 'views/register.html'
+
+    })
+
+    .when('/story/list', {
+
+      resolve: {
+        "check": function ($rootScope, $location) {
+          if (!$rootScope.isLoggedIn) {
+            $location.path('/');
+          }
         }
-    }).config(['$stateProvider', '$urlRouterProvider', 
-    function($stateProvider, $urlRouterProvider) {
-      $stateProvider
-        .state('login', {
-          url : '/login',
-          templateUrl : 'views/login.html',
-          controller : 'scripts/controllers/loginController.js'
-        })
-        .state('home', {
-          url : '/home',
-          templateUrl : 'views/home.html',
-          controller : 'scripts/controllers/homeController.js'
-        });
-        
-         $urlRouterProvider.otherwise('/login');
-    }]);
-   
-  })();
+      },
+
+      templateUrl: 'views/story.list.html'
+
+    })
+
+    .otherwise({
+
+      redirectTo: '/'
+
+    })
+
+});
+
+app.controller('mainController', function ($scope, $location) {
+
+  $scope.go = function (path) {
+
+    $location.path(path);
+
+  }
+
+});
+
+app.controller('loginController', function ($rootScope, $scope, $location) {
+
+  $scope.submit = function () {
+
+    if ($scope.username === 'admin' && $scope.password === 'pass') {
+
+      $rootScope.isLoggedIn = true;
+
+      $rootScope.username = $scope.username;
+
+      $location.path('/story/list');
+
+      return;
+
+    }
+
+    alert("Bad username bruh");
+
+  }
+
+});
+
+app.controller('cookieController', function setCookie(val) {
+
+  cookie();
+
+  function cookie($scope, $cookies) {
+
+    $scope.myCookie = $cookies.get('cookie');
+
+    $cookies.put('cookie', val);
+
+  };
+
+});
