@@ -1,16 +1,51 @@
-angular.module('myApp').controller('LoginController', function ($scope, $rootScope, $stateParams, $state, LoginService) {
-  $rootScope.title = "AngularJS Login Sample";
+angular.module('myApp')
 
-  $scope.formSubmit = function () {
-    if (LoginService.login($scope.username, $scope.password)) {
-      $rootScope.userName = $scope.username;
-      $scope.error = '';
-      $scope.username = '';
-      $scope.password = '';
-      $state.transitionTo('home');
-    } else {
-      alert("Incorrect username or password!")
-      $scope.error = "Incorrect username/password !";
-    }
-  };
-});
+    .controller('loginController', ['$scope', '$http', '$location', function ($scope, $http, $location) {
+
+        $scope.goBack = function () {
+
+            $location.path("/");
+
+        };
+
+        $scope.submit = function () {
+
+            var loggedUsername = $scope.username;
+            var loggedPassword = $scope.password;
+
+            $http({
+
+                method: 'GET',
+
+                url: 'http://localhost:3000/users',
+
+                params: {
+                    username: loggedUsername,
+                }
+
+            }).then(function (response, status, headers, config) {
+
+                username = response.data;
+
+                console.log(username);
+
+                if(response.data.username === loggedUsername && response.data.password === loggedPassword){
+
+                    $rootScope.isLoggedIn = true;
+                    $location.path("/");
+
+                }
+            
+                // this function will be called when the request is success
+
+            }, function error(response) {
+
+                alert()
+                // this function will be called when the request returned error status
+
+            });
+
+
+        };
+
+    }]);
